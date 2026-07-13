@@ -1,8 +1,9 @@
 """
 OpenSCAD Customizer Validation Tests
 
-Verifies that the Customizer dropdown definitions in the wedge card generator
-are correct and won't cause duplicate option issues in the UI.
+Verifies that the Customizer dropdown definitions in all three braille
+generators (wedge card, sign, charm) are correct and won't cause duplicate
+option issues in the UI.
 
 The `value:Label` format can cause duplicate dropdown entries in some OpenSCAD
 versions. The recommended format is:
@@ -13,22 +14,31 @@ where the default value exactly matches one of the dropdown options.
 License: PolyForm Noncommercial 1.0.0
 """
 
+import json
 import re
 
 import pytest
 
-from conftest import SCAD_FILE
+from conftest import ALL_SCAD_FILES
+
+SCAD_IDS = [f.stem for f in ALL_SCAD_FILES]
+
+
+@pytest.fixture(params=ALL_SCAD_FILES, ids=SCAD_IDS)
+def scad_file(request):
+    return request.param
+
+
+@pytest.fixture
+def scad_content(scad_file):
+    return scad_file.read_text(encoding="utf-8")
 
 
 class TestCustomizerDropdowns:
-    """Customizer dropdown definition hygiene."""
+    """Customizer dropdown definition hygiene (all generators)."""
 
-    @pytest.fixture
-    def scad_content(self):
-        return SCAD_FILE.read_text(encoding="utf-8")
-
-    def test_scad_file_exists(self):
-        assert SCAD_FILE.exists(), f"OpenSCAD file not found: {SCAD_FILE}"
+    def test_scad_file_exists(self, scad_file):
+        assert scad_file.exists(), f"OpenSCAD file not found: {scad_file}"
 
     def test_no_value_colon_label_format(self, scad_content):
         """
@@ -112,24 +122,21 @@ class TestCustomizerDropdowns:
 
 
 class TestPresetsFile:
-    """The shipped Customizer presets must stay consistent with the .scad."""
+    """The shipped Customizer presets must stay consistent with each .scad."""
 
     @pytest.fixture
-    def presets(self):
-        import json
-
-        presets_file = SCAD_FILE.with_suffix(".json")
+    def presets(self, scad_file):
+        presets_file = scad_file.with_suffix(".json")
         assert presets_file.exists(), f"Presets file not found: {presets_file}"
         return json.loads(presets_file.read_text(encoding="utf-8"))
 
     @pytest.fixture
-    def scad_params(self):
+    def scad_params(self, scad_content):
         """All top-level Customizer parameter names declared in the .scad."""
-        content = SCAD_FILE.read_text(encoding="utf-8")
         # Cut at the calculated-values marker: only declarations above it are
         # Customizer parameters.
         marker = "CALCULATED VALUES"
-        content = content.split(marker)[0]
+        content = scad_content.split(marker)[0]
         names = set()
         for match in re.finditer(
             r"^(\w+)\s*=\s*[^=]", content, flags=re.MULTILINE

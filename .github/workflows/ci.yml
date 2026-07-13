@@ -1,4 +1,4 @@
-# CI for the Braille Wedge Card STL Generator
+# CI for the braille generators (wedge card, sign, charm)
 #
 # Jobs:
 # 1. lint: Python linting + presets JSON validation
@@ -48,7 +48,17 @@ jobs:
           ruff check tests/ --ignore E501
 
       - name: Validate presets JSON
-        run: python -c "import json; json.load(open('Braille_Wedge_Card_STL_Generator.json', encoding='utf-8'))"
+        run: |
+          python - << 'EOF'
+          import json
+          for name in (
+              "Braille_Wedge_Card_STL_Generator.json",
+              "Braille_Sign_STL_Generator.json",
+              "Braille_Charm_STL_Generator.json",
+          ):
+              json.load(open(name, encoding="utf-8"))
+              print(f"OK: {name}")
+          EOF
 
   # ==========================================================================
   # Job 2: Quick Tests (No OpenSCAD Required)
