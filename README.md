@@ -1,5 +1,10 @@
 # Braille Wedge Card STL Generator (OpenSCAD)
 
+[![CI](https://github.com/BrennenJohnston/braille-wedge-card-openscad/actions/workflows/ci.yml/badge.svg)](https://github.com/BrennenJohnston/braille-wedge-card-openscad/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/BrennenJohnston/braille-wedge-card-openscad)](https://github.com/BrennenJohnston/braille-wedge-card-openscad/releases)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue)](LICENSE)
+[![Live demo](https://img.shields.io/badge/live%20demo-OpenSCAD%20Assistive%20Forge-brightgreen)](https://openscad-assistive-forge.pages.dev/)
+
 Parametric OpenSCAD generators for **directly readable 3D-printed braille**.
 Three self-contained, MakerWorld-ready generators live in this repo:
 
@@ -22,13 +27,17 @@ technique.
 ```text
 side view (as it prints, on the bed)
 
-      ●●   <- raised braille dots on the leaning face
-     /●●
-    / ●●      |\
-   /          | \   <- break-away fin (snaps off after printing)
-  / card      |  \
- /____________|___\____  bed + built-in brim
-        ^ tiny snap-off bridges span the gap
+               ●/ /\
+              ●/=/  \
+             ●/ /    \      <- break-away support fin
+            ●/=/      \        (snaps off after printing)
+           ●/ /        \
+  card -> ●/=/          \
+ _________/_/____________\_________  print bed
+
+   ●  raised braille dots on the leaning (75°) front face
+   =  tiny snap-off bridges spanning the ~1 mm card-fin gap
+      (a built-in brim under the fin anchors it to the bed)
 ```
 
 ## Try it in your browser (no install)
