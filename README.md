@@ -31,6 +31,20 @@ side view (as it prints, on the bed)
         ^ tiny snap-off bridges span the gap
 ```
 
+## Try it in your browser (no install)
+
+**Live demo: [OpenSCAD Assistive Forge](https://openscad-assistive-forge.pages.dev/)**
+
+All three generators ship as built-in tools in OpenSCAD Assistive Forge, an
+accessibility-first web customizer that runs entirely in your browser — no
+account, no uploads, no OpenSCAD install. Pick **Braille Card Customizer**
+(or the charm / sign variant) on the welcome screen and type plain text:
+translation to Grade 1 or Grade 2 Unicode braille happens on your device via
+liblouis, so you can skip the manual translation step below. Adjust the
+parameters, preview in 3D, and export the STL.
+
+The rest of this README covers the desktop OpenSCAD workflow.
+
 ## Quick start
 
 1. **Translate your text** at <https://www.branah.com/braille-translator>:
@@ -264,6 +278,10 @@ rationale (auto-size, centering, preview-only warnings).
 
 ## Related projects
 
+- [OpenSCAD Assistive Forge](https://github.com/BrennenJohnston/openscad-assistive-forge)
+  — accessibility-first browser customizer that ships these generators as
+  built-in tools with automatic braille translation
+  ([live demo](https://openscad-assistive-forge.pages.dev/)).
 - [braille-stl-generator-openscad](https://github.com/BrennenJohnston/braille-stl-generator-openscad)
   — the parent project this generator was split from: braille **embossing
   plates** (emboss + counter pairs) for cylindrical objects. The dot geometry
