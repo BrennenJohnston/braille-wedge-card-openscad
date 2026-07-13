@@ -239,7 +239,9 @@ def test_all_cards_two_card_layout(runner, tmp_path):
         "all_cards",
         {"card_layout": "All cards", **lines},
     )
-    face_w, face_h = expected_face_size([], auto=False)  # manual 200 x 100 default
+    # auto_size_card=On (the default) sizes each card for its own chunk:
+    # rows_per_card (8) rows of the 10-cell text.
+    face_w, face_h = expected_face_size([TEN_CELLS] * 8, auto=True)
     assert_printable(
         mesh,
         expected_bounds(face_w, face_h, fins_on=True, cards=2),
