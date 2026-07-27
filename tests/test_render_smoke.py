@@ -1,14 +1,13 @@
 """
-Render Smoke Tests for the Braille Generators
+Render Smoke Tests for the Braille Wedge Card Generator
 
-Renders representative configurations of all three generators (wedge card,
-sign, charm) through the OpenSCAD CLI and asserts each export is a printable
-solid:
+Renders representative configurations through the OpenSCAD CLI and asserts each
+export is a printable solid:
 
 - watertight,
 - the expected number of connected bodies (dots/fins/bridges all fused -- the
   historical failure mode was dots exporting as hundreds of floating shells),
-- for the card: the bounding box the sizing math predicts.
+- the bounding box the sizing math predicts.
 
 These tests auto-skip when OpenSCAD is not installed. render_quality=Medium is
 passed via -D to keep render times low; quality only affects tessellation
@@ -23,7 +22,7 @@ from pathlib import Path
 import pytest
 import trimesh
 
-from conftest import SCAD_CHARM_FILE, SCAD_FILE, SCAD_SIGN_FILE
+from conftest import SCAD_FILE
 from openscad_runner import OpenSCADNotFoundError, OpenSCADRunner
 
 # ---------------------------------------------------------------------------
@@ -147,7 +146,7 @@ def assert_printable(mesh: trimesh.Trimesh, bounds_expected=None, bodies=1):
 
 
 def test_defaults_in_sync():
-    """The DEFAULTS table above must match the card .scad parameter defaults."""
+    """The DEFAULTS table above must match the .scad parameter defaults."""
     import re
 
     content = SCAD_FILE.read_text(encoding="utf-8")
@@ -161,11 +160,6 @@ def test_defaults_in_sync():
             f"{name}: .scad default is {actual}, test table says {expected}. "
             "Update DEFAULTS in this file."
         )
-
-
-# ---------------------------------------------------------------------------
-# Wedge card
-# ---------------------------------------------------------------------------
 
 
 @pytest.mark.requires_openscad
@@ -247,56 +241,6 @@ def test_all_cards_two_card_layout(runner, tmp_path):
         expected_bounds(face_w, face_h, fins_on=True, cards=2),
         bodies=2,
     )
-
-
-# ---------------------------------------------------------------------------
-# Sign
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.requires_openscad
-def test_sign_both_plates(runner, tmp_path):
-    """Default sign: letter plate + angled braille plate = two solids."""
-    mesh = render(runner, tmp_path, "sign_both", {}, scad_file=SCAD_SIGN_FILE)
-    assert_printable(mesh, bodies=2)
-
-
-@pytest.mark.requires_openscad
-def test_sign_braille_plate_angled(runner, tmp_path):
-    """Angled braille plate with fins exports as one fused solid."""
-    mesh = render(
-        runner,
-        tmp_path,
-        "sign_braille_angled",
-        {"sign_part": "Braille plate"},
-        scad_file=SCAD_SIGN_FILE,
-    )
-    assert_printable(mesh, bodies=1)
-
-
-# ---------------------------------------------------------------------------
-# Charm
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.requires_openscad
-def test_charm_bracelet_clip_default(runner, tmp_path):
-    """Default charm: the vertical bracelet clip is one watertight solid."""
-    mesh = render(runner, tmp_path, "charm_clip", {}, scad_file=SCAD_CHARM_FILE)
-    assert_printable(mesh, bodies=1)
-
-
-@pytest.mark.requires_openscad
-def test_charm_angled_pendant(runner, tmp_path):
-    """Angled circle pendant with its single break-away fin fuses into one solid."""
-    mesh = render(
-        runner,
-        tmp_path,
-        "charm_pendant",
-        {"charm_shape": "circle"},
-        scad_file=SCAD_CHARM_FILE,
-    )
-    assert_printable(mesh, bodies=1)
 
 
 if __name__ == "__main__":

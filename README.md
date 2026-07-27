@@ -5,24 +5,28 @@
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue)](LICENSE)
 [![Live demo](https://img.shields.io/badge/live%20demo-OpenSCAD%20Assistive%20Forge-brightgreen)](https://openscad-assistive-forge.pages.dev/)
 
-Parametric OpenSCAD generators for **directly readable 3D-printed braille**.
-Three self-contained, MakerWorld-ready generators live in this repo:
+A parametric OpenSCAD generator for **directly readable 3D-printed braille
+cards**. One self-contained, MakerWorld-ready file:
 
 | File | What it makes |
 |------|---------------|
 | `Braille_Wedge_Card_STL_Generator.scad` | Braille card that prints leaning back at 75° with break-away support fins; up to 20 lines, single or multi-card layout |
-| `Braille_Sign_STL_Generator.scad` | Two-part ADA-style tactile sign: raised-letter plate + braille plate (flat or 75° angled with fins) |
-| `Braille_Charm_STL_Generator.scad` | Small braille charm/pendant/zipper pull (1–2 cells): pendant shapes or a bracelet C-clip that prints standing vertically |
+| `Braille_Wedge_Card_STL_Generator.json` | Customizer presets, auto-loaded by OpenSCAD |
 
-The flagship card prints **leaning back at 75°** from the print bed — the angle a
-CHI 2024 study found significantly faster and more comfortable to read than
-flat-printed braille, because near-vertical printing moves the layer seams off
-the finger-contact surface. A parametric array of triangular **break-away support
+The card prints **leaning back at 75°** from the print bed — the angle a CHI 2024
+study found significantly faster and more comfortable to read than flat-printed
+braille, because near-vertical printing moves the layer seams off the
+finger-contact surface. A parametric array of triangular **break-away support
 fins** stands behind the card, joined to it by tiny snap-off bridges and grounded
 by a built-in brim, so the whole thing prints support-free as **one fused STL**.
-After printing, the fins snap off and the card is ready to read. The sign's
-braille plate and the charm's pendant shapes reuse the same angled-printing
-technique.
+After printing, the fins snap off and the card is ready to read.
+
+> Two sibling generators grew out of this repo and now live on their own:
+> [braille-sign-openscad](https://github.com/BrennenJohnston/braille-sign-openscad)
+> (two-part ADA-style tactile signs) and
+> [braille-charm-openscad](https://github.com/BrennenJohnston/braille-charm-openscad)
+> (charms, pendants, and bracelet clips). Both reuse the angled-printing
+> technique below, and their history through v1.1.0 is in this repo's log.
 
 ```text
 side view (as it prints, on the bed)
@@ -44,13 +48,13 @@ side view (as it prints, on the bed)
 
 **Live demo: [OpenSCAD Assistive Forge](https://openscad-assistive-forge.pages.dev/)**
 
-All three generators ship as built-in tools in OpenSCAD Assistive Forge, an
+This generator ships as a built-in tool in OpenSCAD Assistive Forge, an
 accessibility-first web customizer that runs entirely in your browser — no
-account, no uploads, no OpenSCAD install. Pick **Braille Card Customizer**
-(or the charm / sign variant) on the welcome screen and type plain text:
-translation to Grade 1 or Grade 2 Unicode braille happens on your device via
-liblouis, so you can skip the manual translation step below. Adjust the
-parameters, preview in 3D, and export the STL.
+account, no uploads, no OpenSCAD install. Pick **Braille Card Customizer** on the
+welcome screen and type plain text: translation to Grade 1 or Grade 2 Unicode
+braille happens on your device via liblouis, so you can skip the manual
+translation step below. Adjust the parameters, preview in 3D, and export the STL.
+The sign and charm variants are there too.
 
 The rest of this README covers the desktop OpenSCAD workflow.
 
@@ -110,60 +114,10 @@ the `grid_rows` slider max. Watch the console for the print-bed size warning —
 `All cards` layout usually beats one giant card: it splits the lines into
 multiple bed-friendly cards that print in a single job.
 
-## The sign generator
-
-`Braille_Sign_STL_Generator.scad` makes a **two-part tactile sign** following
-the 2010 ADA Standards (section 703) recommendations:
-
-- **Letter plate** — raised Liberation Sans characters, uppercase by default,
-  16 mm character height, raised 0.8 mm, 135% line spacing. Prints flat,
-  letters up.
-- **Braille plate** — the same wording in braille (`Line_1`…`Line_6`, Unicode
-  braille from Branah as above). Prints leaning back at 75° with break-away
-  support fins by default (the wedge-card technique — crispest dots), or flat.
-- A **split raised border**: the letter plate carries the top + side rails,
-  the braille plate the bottom + sides, so the mounted pair forms one
-  continuous tactile frame.
-
-Usage notes:
-
-- `sign_part` = `Both` lays the plates side by side on the bed; `Letter plate`
-  / `Braille plate` export one at a time.
-- Leave `auto_fit` = Yes and the plates grow so every row of letters and
-  braille fits; the effective size prints to the console.
-- **ADA disclaimer:** the defaults follow the published 703 figures but the
-  tool does not guarantee compliance (mounting height/location, contrast,
-  glare, character width ratios, and the 9.5 mm minimum braille offset below
-  the raised text are not modeled). Verify against the standard before
-  installing.
-
-## The charm generator
-
-`Braille_Charm_STL_Generator.scad` makes a small **charm, pendant, or zipper
-pull** carrying 1–2 braille cells (`braille_chars`):
-
-- **Pendant shapes** (circle, square, rounded rect, hexagon, oval) with an
-  optional raised border and a keychain hole / bail loop / no attachment.
-  `print_orientation` = Angled (default) leans the charm back at 75° with a
-  single slim break-away fin; Flat prints dots-up.
-- **`bracelet_clip`** (the default shape) — a C-clip for silicone bracelets
-  that always prints **standing vertically**: the C profile lies on the bed
-  and the braille face is a vertical wall, so the dots print crisply with no
-  fin at all. The braille is rotated 90° to read along the band when worn.
-  The clip ignores border/attachment/orientation settings (it is its own
-  attachment).
-
-Lineage: the charm base is adapted from Nasif's Charm Maker (concept by Nasif
-Zaman, CC0); the bracelet clip from the Bracelet Clip Charm (q_charm, CC0; AAC
-bracelet-charm prior art by Duy Do, UW WOOF3D); the dot system from the wedge
-card.
-
 ## Loading the included presets
 
-Each generator has a matching `.json` next to its `.scad`, so OpenSCAD
-auto-loads the parameter sets into the Customizer preset dropdown.
-
-`Braille_Wedge_Card_STL_Generator.json`:
+`Braille_Wedge_Card_STL_Generator.json` sits next to the `.scad`, so OpenSCAD
+auto-loads its parameter sets into the Customizer preset dropdown:
 
 - **Default Card** — the first-run defaults (auto-sized two-line card).
 - **Manual 200 × 100 Card** — the same text with `auto_size_card` = Off and the
@@ -174,12 +128,6 @@ auto-loads the parameter sets into the Customizer preset dropdown.
   check your printer's build volume).
 - **All Cards (16 lines, 2 cards)** — the multi-card layout: 16 lines chunked
   into two 8-row cards printed front to back in one job.
-
-`Braille_Sign_STL_Generator.json`: **Default Sign (both plates)** and
-**Braille Plate Only (flat)**.
-
-`Braille_Charm_STL_Generator.json`: **Large Bracelet Clip (default)**,
-**Small Bracelet Clip**, and **Circle Pendant (angled)**.
 
 Your own saved parameter sets go in the same dropdown via the Customizer's `+`
 button. If you keep personal presets (names, contact info in braille), save
@@ -218,34 +166,28 @@ never end up in a public commit.
 
 ## Upload to MakerWorld (Parametric Model Maker)
 
-Every generator is a single `.scad` file with no `include`/`use`, so each one
-uploads to [MakerWorld](https://makerworld.com/)'s Parametric Model Maker
-as-is — **one `.scad` per listing**:
+This is a single `.scad` file with no `include`/`use`, so it uploads to
+[MakerWorld](https://makerworld.com/)'s Parametric Model Maker as-is:
 
 1. Go to MakerWorld → **Create** → **Parametric Model Maker** (the
    OpenSCAD-based customizer).
-2. Upload **only** the one `.scad` for that listing
-   (`Braille_Wedge_Card_STL_Generator.scad`, `Braille_Sign_STL_Generator.scad`,
-   or `Braille_Charm_STL_Generator.scad`).
-3. In the generated parameter panel, paste Unicode braille into the text
-   parameters and adjust the rest as in the desktop Customizer.
+2. Upload **only** `Braille_Wedge_Card_STL_Generator.scad`.
+3. In the generated parameter panel, paste Unicode braille into `Line_1`… and
+   adjust the rest as in the desktop Customizer.
 4. Generate / render and download the STL.
 
 Notes:
 
 - Customizer **`.json` presets do not upload** — MakerWorld only takes the
-  `.scad`. Each file's built-in defaults are the first-run experience there.
-- The card and sign ship with `show_warnings` off / no 3D warnings by default,
-  so on MakerWorld invalid-character feedback appears **only in the console
-  echo**; card users can flip `show_warnings` in the *[Warnings]* tab.
-- The sign's `font = "Liberation Sans"` is hardcoded and part of MakerWorld's
-  installed font inventory, so the raised letters render identically there.
+  `.scad`. The file's built-in defaults are the first-run experience there.
+- The card ships with `show_warnings` off, so on MakerWorld invalid-character
+  feedback appears **only in the console echo**; users can flip
+  `show_warnings` in the *[Warnings]* tab.
 - **License choice at upload (owner decision):** this repository is under
   PolyForm Noncommercial 1.0.0, but MakerWorld requires choosing from its own
   license list (Creative Commons variants etc.), which does not offer PolyForm.
   Pick the closest match deliberately at upload time (e.g. a CC NonCommercial
-  variant) — whatever is chosen governs the MakerWorld listing. This applies
-  to all three files.
+  variant) — whatever is chosen governs the MakerWorld listing.
 
 ## Development / tests
 
@@ -256,16 +198,15 @@ pytest tests -v
 
 - `tests/test_customizer.py` — Customizer dropdown hygiene (no `value:Label`
   format, defaults match options, no duplicates) and preset/parameter
-  consistency, parametrized across all three generators.
-- `tests/test_source_guards.py` — card source invariants: all 20 `Line_N`
-  params exist and are wired into `_all_lines`, warnings stay preview-only
-  (`%` modifier), and embossing-era concepts (plate types, counter recesses,
-  indicators) stay removed. Plus a MakerWorld guard for all three files: no
-  `include`/`use` (each generator stays a single self-contained file).
-- `tests/test_render_smoke.py` — renders representative configurations of all
-  three generators with the OpenSCAD CLI and asserts each STL is watertight,
-  has the expected body count (e.g. two bodies for the two-card layout and
-  the two-plate sign), and — for the card — the expected bounding box
+  consistency.
+- `tests/test_source_guards.py` — source invariants: all 20 `Line_N` params
+  exist and are wired into `_all_lines`, warnings stay preview-only (`%`
+  modifier), `text()` never escapes `warning_slot`, embossing-era concepts
+  (plate types, counter recesses, indicators) stay removed, and no
+  `include`/`use` (the MakerWorld single-file requirement).
+- `tests/test_render_smoke.py` — renders representative configurations with the
+  OpenSCAD CLI and asserts each STL is watertight, has the expected body count
+  (two bodies for the two-card layout), and matches the expected bounding box
   (auto-skips if OpenSCAD is not installed).
 
 CI (GitHub Actions) runs lint + the quick tests on every push/PR and the
@@ -287,15 +228,20 @@ rationale (auto-size, centering, preview-only warnings).
 
 ## Related projects
 
+- [braille-sign-openscad](https://github.com/BrennenJohnston/braille-sign-openscad)
+  — two-part ADA-style tactile signs. Grew up in this repo (v1.1.0) and split
+  out at its own v1.0.0.
+- [braille-charm-openscad](https://github.com/BrennenJohnston/braille-charm-openscad)
+  — braille charms, pendants, zipper pulls, and bracelet clips. Same story.
 - [OpenSCAD Assistive Forge](https://github.com/BrennenJohnston/openscad-assistive-forge)
-  — accessibility-first browser customizer that ships these generators as
-  built-in tools with automatic braille translation
+  — accessibility-first browser customizer that ships all three as built-in
+  tools with automatic braille translation
   ([live demo](https://openscad-assistive-forge.pages.dev/)).
-- [braille-stl-generator-openscad](https://github.com/BrennenJohnston/braille-stl-generator-openscad)
+- [braille-cylinder-stl-generator-openscad](https://github.com/BrennenJohnston/braille-cylinder-stl-generator-openscad)
   — the parent project this generator was split from: braille **embossing
   plates** (emboss + counter pairs) for cylindrical objects. The dot geometry
   here was adapted from it.
-- [Web-based Braille STL Generator](https://braille-card-and-cylinder-stl-gener.vercel.app)
+- [Web-based Braille Cylinder STL Generator](https://braille-card-and-cylinder-stl-gener.vercel.app)
   — browser-based generator with automatic translation.
 
 ## Credits

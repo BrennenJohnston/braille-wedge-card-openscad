@@ -1,9 +1,8 @@
 """
 OpenSCAD Customizer Validation Tests
 
-Verifies that the Customizer dropdown definitions in all three braille
-generators (wedge card, sign, charm) are correct and won't cause duplicate
-option issues in the UI.
+Verifies that the Customizer dropdown definitions in the wedge card generator
+are correct and won't cause duplicate option issues in the UI.
 
 The `value:Label` format can cause duplicate dropdown entries in some OpenSCAD
 versions. The recommended format is:
@@ -35,7 +34,7 @@ def scad_content(scad_file):
 
 
 class TestCustomizerDropdowns:
-    """Customizer dropdown definition hygiene (all generators)."""
+    """Customizer dropdown definition hygiene."""
 
     def test_scad_file_exists(self, scad_file):
         assert scad_file.exists(), f"OpenSCAD file not found: {scad_file}"
@@ -122,7 +121,7 @@ class TestCustomizerDropdowns:
 
 
 class TestPresetsFile:
-    """The shipped Customizer presets must stay consistent with each .scad."""
+    """The shipped Customizer presets must stay consistent with the .scad."""
 
     @pytest.fixture
     def presets(self, scad_file):

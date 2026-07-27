@@ -1,24 +1,19 @@
 """
-Source Invariant Guards for the Braille Generators
+Source Invariant Guards for the Braille Wedge Card Generator
 
-These tests read the .scad sources (no OpenSCAD required) and pin down the
-invariants that keep this project on-mission.
-
-Card-only guards (Braille_Wedge_Card_STL_Generator.scad):
+These tests read the .scad source (no OpenSCAD required) and pin down the
+invariants that keep this project on-mission:
 
 1. All 20 Line_N parameters exist and are wired into _all_lines.
 2. The grid_rows slider reaches 20.
 3. Warning geometry stays preview-only (wrapped in the `%` modifier) so it can
    never fuse into an exported STL.
-4. text() only appears inside warning_slot (the sign legitimately uses text()
-   for its raised letters, so this guard is card-only).
+4. text() only appears inside warning_slot: anywhere else, solid text would
+   export into the STL.
 5. MISSION GUARD: this is a pure directly-readable braille card. Embossing-era
    concepts (plate selection, counter plates/recesses, row indicators) must
    not reappear in code.
-
-All-file guards (card + sign + charm):
-
-6. MAKERWORLD GUARD: every generator stays a single self-contained file — no
+6. MAKERWORLD GUARD: the generator stays a single self-contained file — no
    include <> / use <> (MakerWorld's Parametric Model Maker takes one .scad).
 
 License: PolyForm Noncommercial 1.0.0
@@ -47,7 +42,7 @@ def scad_content():
 
 @pytest.fixture(scope="module")
 def scad_code(scad_content):
-    """Card source with comments stripped: only real code remains."""
+    """Source with comments stripped: only real code remains."""
     return strip_comments(scad_content)
 
 
@@ -113,10 +108,9 @@ class TestWarningsPreviewOnly:
 
     def test_text_only_used_inside_warning_slot(self, scad_code):
         """
-        In the CARD generator, text() must only appear inside warning_slot:
-        any other use risks exporting solid text into the STL. (The sign
-        generator legitimately uses text() for its raised letters, so this
-        guard is card-only.)
+        text() must only appear inside warning_slot: any other use risks
+        exporting solid text into the STL. A reading card carries braille dots,
+        never raised print.
         """
         code_without_slot = re.sub(
             r"module\s+warning_slot\s*\([^)]*\)\s*\{.*?\n\}",
@@ -175,7 +169,7 @@ class TestMissionGuard:
 
 
 class TestMakerWorldSingleFile:
-    """Every generator must stay one self-contained .scad file."""
+    """The generator must stay one self-contained .scad file."""
 
     @pytest.mark.parametrize(
         "scad_file", ALL_SCAD_FILES, ids=[f.stem for f in ALL_SCAD_FILES]
@@ -183,12 +177,12 @@ class TestMakerWorldSingleFile:
     def test_no_include_or_use(self, scad_file):
         """
         MakerWorld's Parametric Model Maker accepts a single .scad upload, so
-        no generator may pull in other files via include <> or use <>.
+        the generator may not pull in other files via include <> or use <>.
         """
         code = strip_comments(scad_file.read_text(encoding="utf-8"))
         offending = re.findall(r"^\s*(include|use)\s*<[^>]*>", code, flags=re.MULTILINE)
         assert not offending, (
-            f"{scad_file.name} uses include/use statements ({offending}); each "
+            f"{scad_file.name} uses include/use statements ({offending}); the "
             "generator must remain a single self-contained file for MakerWorld."
         )
 

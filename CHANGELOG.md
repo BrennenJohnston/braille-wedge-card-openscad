@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Versions below refer to the card generator unless a file is named explicitly.
 
+## [1.2.0] - 2026-07-27
+
+Narrows this repo back to the wedge card. The sign and charm generators moved
+into their own repositories.
+
+### Removed
+
+- **`Braille_Sign_STL_Generator.scad` / `.json` → [braille-sign-openscad](https://github.com/BrennenJohnston/braille-sign-openscad)**
+  and **`Braille_Charm_STL_Generator.scad` / `.json` → [braille-charm-openscad](https://github.com/BrennenJohnston/braille-charm-openscad)**,
+  each at its own v1.0.0. The three generators shared nothing but a test
+  harness and a README — no OpenSCAD `include`/`use` between them — so a single
+  repo meant every release note and CI run discussed two tools the reader did
+  not care about, and each generator's version number had to move whenever a
+  sibling changed. Their development history stays here, in the v1.1.0 work.
+
+### Changed
+
+- **Test suite scoped to the card.** `tests/conftest.py` declares one `.scad`,
+  so the Customizer and MakerWorld guards no longer parametrize over three
+  files; the sign and charm render smoke tests are gone. CI validates one
+  preset JSON instead of three.
+- **README rewritten** for a single generator, with a pointer to the two new
+  repos.
+- The `.scad` lineage header now names the renamed parent repo,
+  `braille-cylinder-stl-generator-openscad`.
+
 ## [1.1.0] - 2026-07-12
 
 Expands the repo from one generator into three separate, self-contained,
@@ -63,7 +89,7 @@ MakerWorld-ready generators: the wedge card plus new sign and charm tools.
 ## [1.0.0] - 2026-07-05
 
 First public release, split out of
-[braille-stl-generator-openscad](https://github.com/BrennenJohnston/braille-stl-generator-openscad)
+[braille-cylinder-stl-generator-openscad](https://github.com/BrennenJohnston/braille-cylinder-stl-generator-openscad)
 (where it incubated as `experimental/braille-business-card/`).
 
 ### Added

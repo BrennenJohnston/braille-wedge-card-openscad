@@ -1,13 +1,9 @@
-# CI for the braille generators (wedge card, sign, charm)
+# CI for the braille wedge card generator
 #
 # Jobs:
 # 1. lint: Python linting + presets JSON validation
 # 2. test-quick: source-based tests (no OpenSCAD required)
 # 3. test-render: OpenSCAD render smoke tests (watertight / bbox assertions)
-#
-# NOTE: this workflow activates when this folder is a repository root (it was
-# authored inside the parent repo's experimental/ folder, where nested
-# .github/ directories are ignored by GitHub Actions).
 
 name: CI
 
@@ -49,16 +45,7 @@ jobs:
 
       - name: Validate presets JSON
         run: |
-          python - << 'EOF'
-          import json
-          for name in (
-              "Braille_Wedge_Card_STL_Generator.json",
-              "Braille_Sign_STL_Generator.json",
-              "Braille_Charm_STL_Generator.json",
-          ):
-              json.load(open(name, encoding="utf-8"))
-              print(f"OK: {name}")
-          EOF
+          python -c "import json; json.load(open('Braille_Wedge_Card_STL_Generator.json', encoding='utf-8')); print('OK: Braille_Wedge_Card_STL_Generator.json')"
 
   # ==========================================================================
   # Job 2: Quick Tests (No OpenSCAD Required)
