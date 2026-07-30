@@ -241,7 +241,7 @@ rationale (auto-size, centering, preview-only warnings).
   — the parent project this generator was split from: braille **embossing
   plates** (emboss + counter pairs) for cylindrical objects. The dot geometry
   here was adapted from it.
-- [Web-based Braille Cylinder STL Generator](https://braille-card-and-cylinder-stl-gener.vercel.app)
+- [Web-based Braille Cylinder STL Generator](https://braille-cylinder-stl-generator.vercel.app)
   — browser-based generator with automatic translation.
 
 ## Credits
