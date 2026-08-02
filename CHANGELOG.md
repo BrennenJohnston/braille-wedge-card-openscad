@@ -6,6 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Versions below refer to the card generator unless a file is named explicitly.
 
+## [1.2.1] - 2026-08-01
+
+### Changed
+
+- **Lines 9-20 moved to a `[More Braille Lines (Advanced)]` Customizer tab.**
+  All twenty text fields used to sit in the first tab, so opening the Customizer
+  meant scrolling past twelve usually-empty boxes to reach card size, fins, or
+  anything else. Lines 1-8 stay in `[Text Input - Pre-Translated Braille]`,
+  matching the `grid_rows` default of 8, and the rest are one tab away. This is
+  presentation only: the parameter names, `_all_lines` wiring, and the twenty
+  `Line_N` keys in `Braille_Wedge_Card_STL_Generator.json` are all unchanged, so
+  existing presets, multi-card layouts, and `-D` overrides behave exactly as
+  before. OpenSCAD's Customizer cannot show or hide fields based on other
+  settings, so a second tab is the only way to shorten the default view.
+- `tests/test_source_guards.py` gained three guards for the split: lines 1-8 in
+  the main tab, 9-20 in the Advanced tab, and the Advanced tab directly after
+  the main one (Customizer tabs render in source order, so card geometry
+  settings must not get wedged between the two braille tabs).
+
+### Fixed
+
+- The `.scad` header comment claimed `VERSION = 1.1.0` while the repo had been
+  at 1.2.0 since the sign and charm generators moved out. It now reads 1.2.1.
+
 ## [1.2.0] - 2026-07-27
 
 Narrows this repo back to the wedge card. The sign and charm generators moved

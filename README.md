@@ -68,8 +68,9 @@ The rest of this README covers the desktop OpenSCAD workflow.
 2. **Open `Braille_Wedge_Card_STL_Generator.scad` in [OpenSCAD](https://openscad.org/)**
    (2024.x or newer recommended; nightly builds render fastest) and open the
    Customizer panel (View → Customizer).
-3. **Paste the braille** into `Line_1` … `Line_20` under
-   *Text Input - Pre-Translated Braille*.
+3. **Paste the braille** into `Line_1` … `Line_8` under
+   *Text Input - Pre-Translated Braille*. Lines 9 – 20 are one tab further
+   down, under *More Braille Lines (Advanced)*.
 4. The card **auto-sizes its face** to fit your text plus a margin by default.
    The effective size is reported in the console — the Customizer cannot display
    computed values in its sliders. Set `auto_size_card` = Off to use the manual
@@ -90,7 +91,8 @@ The rest of this README covers the desktop OpenSCAD workflow.
 
 | Tab | What it controls |
 |-----|------------------|
-| Text Input | `Line_1`…`Line_20`, pre-translated Unicode braille |
+| Text Input | `Line_1`…`Line_8`, pre-translated Unicode braille (matches the `grid_rows` default of 8) |
+| More Braille Lines (Advanced) | `Line_9`…`Line_20`, same format — kept in a second tab so twelve usually-empty boxes don't bury the settings below |
 | Card Size | Auto-size toggle + margin (default: auto-size On), or manual width/height (200 × 100 mm when Off) |
 | Multi-Card Layout | `Single` or `All cards` chunked layout, rows per card, gap between cards |
 | Warnings | Preview-only red warning text on/off (default Off; console warnings always print) |
@@ -108,8 +110,8 @@ print-tested configuration.
 ### More than 20 lines?
 
 `_all_lines` in the `.scad` is the single source of truth. To extend: declare
-`Line_21 = "";` in the text-input section, append it to `_all_lines`, and raise
-the `grid_rows` slider max. Watch the console for the print-bed size warning —
+`Line_21 = "";` in the *More Braille Lines (Advanced)* section, append it to
+`_all_lines`, and raise the `grid_rows` slider max. Watch the console for the print-bed size warning —
 20 lines at default spacing is already ~209 mm tall. For long texts, the
 `All cards` layout usually beats one giant card: it splits the lines into
 multiple bed-friendly cards that print in a single job.

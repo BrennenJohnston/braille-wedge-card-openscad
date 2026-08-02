@@ -4,7 +4,8 @@ Source Invariant Guards for the Braille Wedge Card Generator
 These tests read the .scad source (no OpenSCAD required) and pin down the
 invariants that keep this project on-mission:
 
-1. All 20 Line_N parameters exist and are wired into _all_lines.
+1. All 20 Line_N parameters exist and are wired into _all_lines, with 1-8 in
+   the main text tab and 9-20 in the Advanced tab right after it.
 2. The grid_rows slider reaches 20.
 3. Warning geometry stays preview-only (wrapped in the `%` modifier) so it can
    never fuse into an exported STL.
@@ -26,6 +27,11 @@ import pytest
 from conftest import ALL_SCAD_FILES, SCAD_FILE
 
 NUM_LINES = 20
+
+# Customizer tabs holding the Line_N fields. Lines 1-8 (the grid_rows default)
+# stay in the first tab; 9-20 move to the second so the default view is short.
+MAIN_TEXT_GROUP = "/* [Text Input - Pre-Translated Braille] */"
+ADVANCED_GROUP = "/* [More Braille Lines (Advanced)] */"
 
 
 def strip_comments(scad_source: str) -> str:
@@ -89,6 +95,45 @@ class TestTwentyLines:
         assert match, "grid_rows slider declaration not found"
         assert match.group(4) == str(NUM_LINES), (
             f"grid_rows slider max must be {NUM_LINES}, got {match.group(4)}"
+        )
+
+    def test_first_eight_lines_are_in_the_main_text_group(self, scad_content):
+        """
+        grid_rows defaults to 8, so the eight rows a default card actually
+        renders must be fillable without opening another tab.
+        """
+        main_start = scad_content.index(MAIN_TEXT_GROUP)
+        advanced_start = scad_content.index(ADVANCED_GROUP)
+        main_section = scad_content[main_start:advanced_start]
+        for n in range(1, 9):
+            assert re.search(rf"^Line_{n}\s*=", main_section, flags=re.MULTILINE), (
+                f"Line_{n} must stay in {MAIN_TEXT_GROUP}"
+            )
+
+    def test_remaining_lines_are_in_the_advanced_group(self, scad_content):
+        """
+        Lines 9-20 are rarely used, and twenty boxes in the first tab pushed
+        every other setting off screen. The Customizer cannot add fields on
+        demand, so a separate tab is the only way to shorten the default view.
+        """
+        advanced_start = scad_content.index(ADVANCED_GROUP)
+        next_group = scad_content.index("/* [", advanced_start + len(ADVANCED_GROUP))
+        advanced_section = scad_content[advanced_start:next_group]
+        for n in range(9, NUM_LINES + 1):
+            assert re.search(rf"^Line_{n}\s*=", advanced_section, flags=re.MULTILINE), (
+                f"Line_{n} must be in {ADVANCED_GROUP}"
+            )
+
+    def test_advanced_group_follows_the_main_text_group(self, scad_content):
+        """
+        Customizer tabs render in source order. The two braille tabs belong
+        next to each other, not separated by card geometry settings.
+        """
+        advanced_start = scad_content.index(ADVANCED_GROUP)
+        preceding = scad_content[:advanced_start]
+        last_group = preceding.rindex("/* [")
+        assert preceding[last_group:].startswith(MAIN_TEXT_GROUP), (
+            f"{ADVANCED_GROUP} must come directly after {MAIN_TEXT_GROUP}"
         )
 
 
