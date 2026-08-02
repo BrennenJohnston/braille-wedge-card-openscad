@@ -182,14 +182,34 @@ Notes:
 
 - Customizer **`.json` presets do not upload** — MakerWorld only takes the
   `.scad`. The file's built-in defaults are the first-run experience there.
-- The card ships with `show_warnings` off, so on MakerWorld invalid-character
-  feedback appears **only in the console echo**; users can flip
-  `show_warnings` in the *[Warnings]* tab.
+- The card ships with `show_warnings` off, and MakerWorld's Parametric Model
+  Maker has **no visible OpenSCAD console** — so with warnings off,
+  invalid-character feedback is not reachable at all there. Tell users to flip
+  `show_warnings` on in the *[Warnings]* tab, which renders the warning as 3D
+  text on the model itself.
 - **License choice at upload (owner decision):** this repository is under
   PolyForm Noncommercial 1.0.0, but MakerWorld requires choosing from its own
   license list (Creative Commons variants etc.), which does not offer PolyForm.
   Pick the closest match deliberately at upload time (e.g. a CC NonCommercial
   variant) — whatever is chosen governs the MakerWorld listing.
+
+### Release documentation
+
+The MakerWorld release copy and the user guide are written out in full, so
+publishing is a copy/paste job rather than a writing job:
+
+- [`docs/MAKERWORLD_LISTING.md`](docs/MAKERWORLD_LISTING.md) — upload fields,
+  description body, print profile notes, gallery plan with alt text, and the
+  pre-publish checklist including the licensing gate.
+- [`docs/MAKERWORLD_QUICK_START.md`](docs/MAKERWORLD_QUICK_START.md) — the user
+  guide: what to include, translating text, the customizer, printing, why 75°,
+  troubleshooting, and the OpenSCAD Assistive Forge alternative.
+
+Both are written to the shared
+[Accessible MakerWorld Documentation Standard](https://github.com/BrennenJohnston/accessible-makerworld-doc-standard/blob/main/ACCESSIBLE_MAKERWORLD_DOC_STANDARD.md),
+which lives in its own repository together with the citation library and
+`qa_check.py`, the cross-project gate that checks every project's documents
+against it.
 
 ## Development / tests
 
